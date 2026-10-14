@@ -429,3 +429,42 @@ header.sc .logo{width:150px}
 .van{overflow:visible}
 .cm .speed{display:none}
 .van{width:min(520px,42vw)}
+
+/* ===== Página Trabaja con LINCONT ===== */
+.tp.theme-join{--pv1:#141413;--pv2:#22201D;--pva:#C9AD92;--s1:#141413;--s2:#1B1A18;--ln:rgba(255,255,255,.13)}
+.jh{position:relative;overflow:hidden;padding:170px 0 110px;background:radial-gradient(120% 90% at 85% 10%,#2A2622,#141413 62%)}
+.jh-in{position:relative;z-index:2}
+.jh .crumbs,.jh .crumbs a{color:rgba(255,255,255,.6)}
+.jh h1{font-size:clamp(3rem,7vw,5.6rem);line-height:1.02;margin:18px 0 24px}
+.jh .lead{max-width:560px;color:rgba(255,255,255,.78);font-size:19px;margin-bottom:34px}
+.jh .btn.filled{background:var(--pva);border-color:var(--pva);color:#141413}
+.jbg{position:absolute;inset:0;pointer-events:none}
+.jbg img{position:absolute;right:-6%;top:50%;width:min(620px,60vw);translate:0 -50%;opacity:.10;animation:jspin 60s linear infinite}
+.jbg i{position:absolute;right:calc(3% + 140px);top:50%;width:420px;height:420px;margin:-210px -210px 0 0;border:1px solid rgba(201,173,146,.35);border-radius:50%;animation:jpulse 6s ease-out infinite}
+.jbg i:nth-of-type(2){animation-delay:2s}.jbg i:nth-of-type(3){animation-delay:4s}
+@keyframes jspin{to{rotate:360deg}}
+@keyframes jpulse{from{scale:.4;opacity:.8}to{scale:1.9;opacity:0}}
+.jtitle{margin-bottom:44px}
+.jgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.jcard{position:relative;overflow:hidden;padding:40px 36px;border:1px solid var(--ln);background:rgba(255,255,255,.04);display:flex;flex-direction:column;transition:transform .4s ease,border-color .4s ease,box-shadow .4s ease}
+.jcard:before{content:"";position:absolute;left:0;top:0;height:2px;width:100%;background:var(--pva);transform:scaleX(0);transform-origin:left;transition:transform .6s ease}
+.jcard:hover{transform:translateY(-8px);border-color:var(--pva);box-shadow:0 24px 50px rgba(0,0,0,.4)}
+.jcard:hover:before{transform:scaleX(1)}
+.jic{width:58px;height:58px;border:1px solid var(--pva);border-radius:50%;display:grid;place-items:center;margin-bottom:22px;transition:rotate .6s ease,background .4s}
+.jic .ic{width:26px;height:26px;fill:none;stroke:var(--pva);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.jcard:hover .jic{rotate:360deg;background:rgba(201,173,146,.12)}
+.jn{position:absolute;right:30px;top:20px;font:500 4.2rem var(--serif);color:rgba(255,255,255,.06);line-height:1}
+.jcard h3{font-size:2rem;margin-bottom:12px}
+.jcard p{color:rgba(255,255,255,.76);margin-bottom:20px}
+.jcard ul{list-style:none;margin:0 0 30px;padding:0;flex:1}
+.jcard li{position:relative;padding:12px 0 12px 26px;border-top:1px solid var(--ln);color:rgba(255,255,255,.88);font-size:15px}
+.jcard li:before{content:"";position:absolute;left:2px;top:19px;width:7px;height:7px;background:var(--pva);rotate:45deg}
+.jcard .btn{align-self:flex-start;background:var(--pva);border-color:var(--pva);color:#141413}
+.jsteps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;border-top:1px solid var(--ln)}
+.jstep{padding:34px 30px 10px 0;position:relative}
+.jstep span{font:500 3.2rem var(--serif);color:var(--pva);line-height:1}
+.jstep h3{font-size:1.6rem;margin:14px 0 8px}
+.jstep p{color:rgba(255,255,255,.74);max-width:300px}
+@media(max-width:700px){.jh{padding:130px 0 80px}.jbg img{opacity:.07}.jcard{padding:32px 24px}}
+@media(prefers-reduced-motion:reduce){.jbg img,.jbg i{animation:none}}
+.js .jgrid.r,.js .jsteps.r{opacity:1;translate:none}

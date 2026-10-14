@@ -77,6 +77,16 @@ m.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)
 document.addEventListener('keydown',e=>{{if(e.key==='Escape')setMenu(false)}});
 $('#y').textContent=new Date().getFullYear();
 const fd=$('#fecha');if(fd)fd.min=new Date().toISOString().slice(0,10);
+document.addEventListener('click',e=>{{
+  const a=e.target.closest&&e.target.closest('a[href^="mailto:"]');
+  if(!a||/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent))return;
+  e.preventDefault();
+  const u=new URL(a.href);
+  const q=new URLSearchParams({{view:'cm',fs:'1',to:u.pathname}});
+  if(u.searchParams.get('subject'))q.set('su',u.searchParams.get('subject'));
+  if(u.searchParams.get('body'))q.set('body',u.searchParams.get('body'));
+  window.open('https://mail.google.com/mail/?'+q.toString(),'_blank');
+}});
 const KEY='{W3F}';
 const f=$('form[data-wa]');
 if(f)f.addEventListener('submit',e=>{{
@@ -166,7 +176,7 @@ MOTION_JS = r"""
    if(/^\s+$/.test(p)){f.appendChild(d.createTextNode(' '))}else{var w=d.createElement('span');w.className='w';var i=d.createElement('i');i.style.setProperty('--i',n++);i.textContent=p;w.appendChild(i);f.appendChild(w)}});
    node.replaceChild(f,c)}
   else if(c.nodeType===1)walk(c)})})(h1);h1.classList.add('split')}
- var els=d.querySelectorAll('.top,.sec .wrap>*,.feat,.proj,.list li,.card,.step,.pgrid>div:first-child,.path>*,.agrid>div,.fcols>*,.cwrap>*,.phero .wrap>*,.more-note,.fgrid>*');
+ var els=d.querySelectorAll('.top,.sec .wrap>*,.feat,.proj,.list li,.card,.step,.pgrid>div:first-child,.path>*,.agrid>div,.fcols>*,.cwrap>*,.phero .wrap>*,.more-note,.fgrid>*,.jcard,.jstep');
  var cnt=new Map();
  els.forEach(function(el){var k=el.parentNode,i=cnt.get(k)||0;cnt.set(k,i+1);el.style.setProperty('--d',Math.min(i,5));el.classList.add('r')});
  if(!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('in')});return}
@@ -361,23 +371,42 @@ GLOBAL_SERVICES = [
 
 def join_page():
     roles = [
-     ("Cierre de ventas", "Para empresas que ya tienen clientes interesados, pero pierden ventas antes de cerrar. LINCONT se encarga de la conversación final: resuelve dudas, explica la oferta y concreta la venta."),
-     ("Desarrollo de negocios", "Para empresas que quieren llegar a nuevos clientes. LINCONT identifica oportunidades comerciales y facilita el contacto con quienes necesitan lo que ofreces."),
-     ("Ser empresa aliada", "Para empresas que prestan servicios especializados y quieren formar parte de la red de aliados de LINCONT, como Global EMC y Furgoservi."),
+     ("Cierre de ventas", "check", "Para empresas que ya tienen clientes interesados, pero pierden ventas antes de cerrar.",
+      ["Atención a los clientes interesados", "Explicación clara de tu oferta", "Seguimiento hasta concretar la venta"]),
+     ("Desarrollo de negocios", "layers", "Para empresas que quieren llegar a nuevos clientes y abrir nuevas oportunidades.",
+      ["Identificación de oportunidades comerciales", "Contacto con quienes necesitan lo que ofreces", "Red de aliados como Global EMC y Furgoservi"]),
     ]
-    cards = "".join(f'<article class="card role"><h3>{html.escape(t)}</h3><p>{html.escape(d)}</p></article>' for t, d in roles)
-    opts = "".join(f"<option>{html.escape(t)}</option>" for t, _ in roles)
-    return head("Trabaja con LINCONT", "Contrata a LINCONT para cierre de ventas y desarrollo de negocios, o súmate como empresa aliada.") + header(False) + f"""<main id="main">
-<section class="phero">
- <div class="wrap">
+    cards = "".join(
+      f'<article class="jcard r" style="--d:{i}"><div class="jic">{ico(ic)}</div><div class="jn">0{i+1}</div><h3>{html.escape(t)}</h3><p>{html.escape(d)}</p>'
+      f'<ul>{"".join("<li>"+html.escape(x)+"</li>" for x in bl)}</ul>'
+      f'<button type="button" class="btn filled" data-rol="{html.escape(t)}">Quiero este servicio <span aria-hidden="true">→</span></button></article>'
+      for i, (t, ic, d, bl) in enumerate(roles))
+    opts = "".join(f"<option>{html.escape(t)}</option>" for t, _, _, _ in roles)
+    hdr = header(False).replace("assets/lincont-logo.png", "assets/lincont-logo-negativo.png", 1)
+    foot = FOOT.replace("assets/lincont-logo.png", "assets/lincont-logo-negativo.png", 1).replace("</footer>", "</footer></div>", 1)
+    return head("Trabaja con LINCONT", "Contrata a LINCONT para cierre de ventas y desarrollo de negocios.") + '<div class="tp theme-join">' + hdr + f"""<main id="main">
+<section class="jh">
+ <div class="jbg" aria-hidden="true"><img src="assets/lincont-c.svg" alt=""><i></i><i></i><i></i></div>
+ <div class="wrap jh-in">
   <p class="crumbs"><a href="index.html">Inicio</a> / Trabaja con LINCONT</p>
   <div class="eyebrow">Trabaja con LINCONT</div>
-  <h1>Elige cómo quieres trabajar con LINCONT.</h1>
-  <p class="lead">Si tu empresa quiere vender más, encontrar nuevos clientes o sumarse como aliada, cuéntanos qué necesitas.</p>
+  <h1>Hagamos crecer<br>tu empresa.</h1>
+  <p class="lead">Elige el servicio que necesitas. LINCONT te acompaña a cerrar más ventas y a encontrar nuevas oportunidades de negocio.</p>
+  <a class="btn filled" href="#servicios">Ver servicios <span aria-hidden="true">↓</span></a>
  </div>
 </section>
-<section class="sec alt"><div class="wrap"><div class="rolegrid">{cards}</div>
- <p class="note">Las condiciones de cada colaboración se acuerdan por escrito antes de empezar.</p></div></section>
+<section class="sec" id="servicios"><div class="wrap">
+ <div class="jtitle r"><div class="eyebrow">Servicios</div><h2>¿Qué necesita tu empresa?</h2></div>
+ <div class="jgrid">{cards}</div>
+</div></section>
+<section class="sec alt"><div class="wrap">
+ <div class="jtitle r"><div class="eyebrow">Cómo trabajamos</div><h2>Tres pasos, sin complicaciones</h2></div>
+ <div class="jsteps">
+  <div class="jstep r" style="--d:0"><span>01</span><h3>Nos cuentas</h3><p>Completas el formulario con lo que tu empresa necesita.</p></div>
+  <div class="jstep r" style="--d:1"><span>02</span><h3>Conversamos</h3><p>LINCONT te contacta para entender tu caso y acordar cómo trabajar.</p></div>
+  <div class="jstep r" style="--d:2"><span>03</span><h3>Avanzamos</h3><p>Las condiciones se acuerdan por escrito antes de empezar.</p></div>
+ </div>
+</div></section>
 <section class="formbox" id="formulario">
  <div class="wrap fcols">
   <div><div class="eyebrow">Solicitud de contacto</div><h2>Cuéntanos sobre tu empresa</h2>
@@ -387,7 +416,7 @@ def join_page():
    <div class="f"><label for="empresa">Empresa</label><input id="empresa" required autocomplete="organization"></div>
    <div class="f"><label for="telefono">Teléfono / WhatsApp</label><input id="telefono" type="tel" required autocomplete="tel"></div>
    <div class="f"><label for="correo">Correo electrónico</label><input id="correo" type="email" autocomplete="email"></div>
-   <div class="f"><label for="rol">Servicio que me interesa</label><select id="rol">{opts}</select></div>
+   <div class="f full"><label for="rol">Servicio que me interesa</label><select id="rol">{opts}</select></div>
    <div class="f full"><label for="mensaje">Cuéntanos brevemente qué necesitas</label><textarea id="mensaje" required></textarea></div>
    <div class="full"><button class="btn filled" type="submit">Enviar solicitud <span aria-hidden="true">→</span></button></div>
    <p class="priv">La información proporcionada será utilizada únicamente para gestionar esta solicitud.</p>
@@ -397,7 +426,10 @@ def join_page():
 </section>
 {contact_bar()}
 </main>
-""" + FOOT
+<script>
+document.querySelectorAll('[data-rol]').forEach(function(b){{b.addEventListener('click',function(){{var s=document.getElementById('rol');if(s)s.value=b.dataset.rol;document.getElementById('formulario').scrollIntoView({{behavior:'smooth'}})}})}});
+</script>
+""" + foot
 
 
 def ico(name):
